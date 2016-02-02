@@ -1,0 +1,26 @@
+WINDOWS using Visual Studio 2013 (x86)
+
+SDL 2.0.3 - RelativePath in VS:
+--------------------------------
+(INCLUDES)
+..\Libs\SDL2-2.0.3\include;
+(LIBS)
+..\Libs\SDL2-2.0.3\lib\x86
+
+=========================================================================================
+
+Awesomium 1.7.5 - RelativePath in VS:
+--------------------------------------
+(INCLUDES)
+..\Libs\Awesomium SDK\1.7.5.1\include
+(LIBS)
+..\Libs\Awesomium SDK\1.7.5.1\build\lib
+
+=========================================================================================
+
+FreeImagePlus 3.7.5 - RelativePath in VS:
+-----------------------------------------
+(INCLUDES)
+..\Libs\FreeImage\Wrapper\FreeImagePlus\dist\x32;..\Libs\FreeImage\Dist\x32
+(LIBS)
+..\Libs\FreeImage\Wrapper\FreeImagePlus\dist\x32

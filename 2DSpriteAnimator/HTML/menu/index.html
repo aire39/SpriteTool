@@ -1,0 +1,327 @@
+<!doctype html>
+<html>
+ <head>
+  	<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css" />
+  	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+  	<link rel="stylesheet" type="text/css" href="css/style_main.css" />
+  	<link rel="stylesheet" type="text/css" href="css/jquery.mCustomScrollbar.min.css" />
+ </head>
+
+ <body>
+
+  <div id="nav_menu">
+  	<div class="btn-group" role="group" aria-label="...">
+	  	<div class="dropdown btn-group" role="group" aria-label="...">
+
+			<button  class="btn btn-default btn-default-dark dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+			<span class="glyphicon glyphicon-file newfile_props" aria-hidden="true"></span>
+		    File
+		    	<span class="caret"></span>
+		  	</button>
+			<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+				<li><a id="newfile" type="button" data-toggle="modal" data-target="#myModal" href="#">New</a></li>
+				<li><a id="openfile" href="#">Open</a></li>
+				<li class="disabled"><a href="#">Save</a></li>
+				<li class="disabled"><a href="#">Save As</a></li>
+				<li role="separator" class="divider"></li>
+				<li class="disabled"><a href="#">Export</a></li>
+				<li role="separator" class="divider"></li>
+				<li><a id="quit" href="#">Quit</a></li>
+			</ul>
+		</div>
+
+		<div class="dropdown btn-group" role="group" aria-label="...">
+			<button class="btn btn-default btn-default-dark dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+		    View
+		    	<span class="caret"></span>
+		  	</button>
+			<ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+				<li class="disabled"><a href="#">Grid</a></li>
+				<li role="separator" class="divider"></li>
+				<li class="disabled"><a href="#">Spaced</a></li>
+			</ul>
+		</div>
+
+	  </div>
+  </div>
+
+  <div class="break"></div>
+
+  <div class="prop_panel">
+  		<div class="solution_panel">
+  			
+			<style name="impostor_size">
+			    .marker + li { border-top-width:0px; }
+			</style>
+
+			
+			<ul id="sortable" class="list-group no-radius">
+		  		<li class="ui-state-default list-group-item panel-group sorted-child">
+	  				<span class="header_style" id="accordion" aria-multiselectable="true" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><span class="drop-icon-prop glyphicon glyphicon-option-vertical"></span><span style="font-size: 24px; top: 6px" class="glyphicon glyphicon-equalizer"></span> Project 1</span>
+
+				    <div style="overflow: hidden" id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+				      <div class="panel-body">
+				        
+				        <div class="SubOne" style="overflow: hidden">
+
+					        <div class="left_break_lvl_1"></div>
+							<ul id="sortable2" class="list-group no-radius">
+
+						  		<li  class="ui-state-default list-group-item panel-group">
+
+									<span class="header_style_sm" id="accordion2" role="tablist" aria-multiselectable="true" role="button" data-toggle="collapse" data-parent="#accordion2" href="#collapseOneA" aria-expanded="true" aria-controls="collapseOneA" style="font-size: 12px"><span class="drop-icon-prop-sm glyphicon glyphicon-option-vertical"></span><span style="font-size: 16px; top: 3px" class="glyphicon glyphicon-picture"></span> Sources</span>
+
+									    <div id="collapseOneA" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+
+									    	<div class="panel-body">
+
+									    		<div class="SubOne" style="">
+
+													<div class="left_break_lvl_2"></div>
+													<ul id="sortable2_1" class="list-group no-radius">
+
+														<li class="ui-state-default list-group-item panel-group"><span class="header_style_sm2"><span class="glyphicon glyphicon-blackboard"></span> Image 1</span></li>
+														<li class="ui-state-default list-group-item panel-group"><span class="header_style_sm2"><span class="glyphicon glyphicon-blackboard"></span> Image 2</span></li>
+														<li class="ui-state-default list-group-item panel-group"><span class="header_style_sm2"><span class="glyphicon glyphicon-blackboard"></span> Image 3</span></li>
+														<li class="ui-state-default list-group-item panel-group"><span class="header_style_sm2"><span class="glyphicon glyphicon-blackboard"></span> Image 4</span></li>
+													
+													</ul>
+													<div class="bottom_break_lvl_2"></div>
+												</div>
+											</div>
+								      	</div>
+
+						  		</li>
+
+						  		<li class="ui-state-default list-group-item panel-group">
+
+									<span class="header_style_sm" id="accordion3" role="tablist" aria-multiselectable="false" role="button" data-toggle="collapse" data-parent="#accordion3" href="#collapseOneB" aria-expanded="true" aria-controls="collapseOneB" style="font-size: 12px; background-color: #449D44"><span class="drop-icon-prop-sm glyphicon glyphicon-option-vertical"></span><span style="font-size: 16px; top: 3px" class="glyphicon glyphicon-leaf"></span> Animations</span>
+
+									    <div id="collapseOneB" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo_Two">
+
+									    	<div class="panel-body">
+
+									    		<div class="SubOne" style="">
+
+													<div class="left_break_lvl_2_2"></div>
+													<ul id="sortable2_2" class="list-group no-radius">
+														<li class="ui-state-default list-group-item panel-group"><span class="header_style_sm2"><span class="glyphicon glyphicon-cd"></span> Animation 1</span></li>
+														<li class="ui-state-default list-group-item panel-group"><span class="header_style_sm2"><span class="glyphicon glyphicon-cd"></span> Animation 2</span></li>
+														<li class="ui-state-default list-group-item panel-group"><span class="header_style_sm2"><span class="glyphicon glyphicon-cd"></span> Animation 3</span></li>
+													</ul>
+													<div class="bottom_break_lvl_2_2"></div>
+												</div>
+											</div>
+								      	</div>
+						  		</li>
+
+						  	</ul>
+					  	</div>
+					  	<div class="left_break_lvl_1" style="position:relative; display: block; width: 251px; height: 4px; top: 1px"></div>
+
+				      </div>
+				    </div>
+
+			  </li>
+
+			  <li class="ui-state-default list-group-item panel-group sorted-child" id="accordion" role="tablist" aria-multiselectable="true" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+			  		<span class="header_style"><span class="drop-icon-prop glyphicon glyphicon-option-vertical"></span><span style="font-size: 24px; top: 6px" class="glyphicon glyphicon-equalizer"></span> Project 2</span>
+
+				    <div id="collapseTwo" class="panel-collapse collapse out" role="tabpanel" aria-labelledby="headingOne">
+				      <div class="panel-body">
+				        A Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+				      </div>
+				    </div>
+
+			  </li>
+
+			  <li class="ui-state-default list-group-item sorted-child"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+			  <span class="header_style">Project 3</span>
+			  </li>
+
+			  <li class="ui-state-default list-group-item sorted-child"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Project 4</li>
+			  <li class="ui-state-default list-group-item sorted-child"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Project 5</li>
+			  <li class="ui-state-default list-group-item sorted-child"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Project 6</li>
+			  <li class="ui-state-default list-group-item sorted-child"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Project 7</li>
+
+			</ul>
+
+			<ul class='cloned-sorted-child list-group no-radius' id='cloned-sorted-child'></ul>
+
+  		</div>
+
+  		<div class="vertical_frame">
+  			<div class="dropdown btn-group" role="group" aria-label="...">
+
+				<button class="btn btn-default btn-default-dark dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					<span class="glyphicon glyphicon-home"></span>&nbsp;
+				    <span>Solution</span>
+			  	</button>
+
+				<button class="btn btn-default btn-default-dark dropdown-toggle" type="button" id="dropdownMenu4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					<span class="glyphicon glyphicon-pushpin"></span>&nbsp;
+				    <span>Properties</span>
+			  	</button>
+
+		  	</div>
+	  	</div>
+	</div>
+
+	<div class="fixed_poscoord">
+		<p><strong>X:</strong><span id="cam_posx">0</span>&nbsp;<strong>Y:</strong><span id="cam_posy">0</span></p>
+	</div>
+
+
+	<div id="myModal" role="dialog" class="modal fade">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title">Modal title</h4>
+	      </div>
+	      <div class="modal-body">
+	        <p>One fine body&hellip;</p>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        <button type="button" class="btn btn-primary">Save changes</button>
+	      </div>
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+
+
+
+  <script type="text/javascript" src="js/jquery_2_1_4.js"></script>
+  <script src="js/jquery_ui/jquery-ui.js"></script>
+  <script type="text/javascript" src="js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="js/jquery.mCustomScrollbar.min.js"></script>
+ 	
+  <script type="text/javascript">
+
+  function updateCamMovement(x,y) {
+  	$('#cam_posx').text(-x);
+  	$('#cam_posy').text(y);
+  }
+
+
+
+  $(document).ready(function(){
+
+  	$('.collapse').collapse('hide');
+
+  	$('.prop_panel .vertical_frame').mCustomScrollbar({
+  		axis: 'y'
+  	});
+
+  	$('.prop_panel .solution_panel').mCustomScrollbar({
+  		axis: 'y'
+  	});
+
+	/*$('#newfile').click(function(e){
+		//app.sayHello(12, "asdas");
+		e.preventDefault();
+	});*/
+
+	$('#openfile').click(function(e){
+		app.openFile($('#dlg_openfile').val());
+		e.preventDefault();
+	});
+
+	$('#quit').click(function(e){
+		app.Quit();
+		e.preventDefault();
+	});
+
+
+	var stylesheet = $('style[name=impostor_size]')[0].sheet;
+    var rule = stylesheet.rules ? stylesheet.rules[0].style : stylesheet.cssRules[0].style;
+	var setPadding = function (atHeight) {
+	        rule.cssText = 'border-top-width: ' + atHeight + 'px';
+	    };
+
+/*
+	$("li.sorted-child").each(function(i) {
+	  var item = $(this);
+	  var item_clone = item.clone();
+
+	  var fchildclone = item_clone.children('span:first').clone();
+	  item_clone.empty();
+	  item_clone.append(fchildclone);
+
+	  item.data("clone", item_clone);
+	  var position = item.position();
+	  
+	  item_clone
+	  .css({
+	    left: position.left,
+	    top: position.top,
+	    visibility: "hidden",
+	  })
+	    .attr("data-pos", i+1);
+	  $("#cloned-sorted-child").append(item_clone);
+
+	});
+*/
+
+    $( "#sortable" ).sortable({
+    	axis: "y",
+
+		revert: true,
+		scroll: false,
+		placeholder: "sortable-placeholder",
+/*
+		start: function(e, ui) {
+			ui.helper.addClass("exclude-me");
+			$(".mparent .sorted-child:not(.exclude-me)")
+			  .css("visibility", "hidden");
+			ui.helper.data("clone").hide();
+			$(".cloned-sorted-child .sorted-child").css("visibility", "visible");
+		},
+
+		stop: function(e, ui) {
+		$(".mparent .sorted-child.exclude-me").each(function() {
+			var item = $(this);
+			var clone = item.data("clone");
+			var position = item.position();
+
+			clone.css("left", position.left);
+			clone.css("top", position.top);
+			clone.show();
+
+			item.removeClass("exclude-me");
+		});
+
+		$(".mparent .sorted-child").each(function() {
+		  var item = $(this);
+		  var clone = item.data("clone");
+		  
+		  clone.attr("data-pos", item.index());
+		});
+
+		$(".mparent .sorted-child").css("visibility", "visible");
+		$(".cloned-sorted-child .sorted-child").css("visibility", "hidden");
+		},
+
+		change: function(e, ui) {
+		$(".mparent .sorted-child:not(.exclude-me)").each(function() {
+		  var item = $(this);
+		  var clone = item.data("clone");
+		  clone.stop(true, false);
+		  var position = item.position();
+		  clone.animate({
+		    left: position.left,
+		    top: position.top
+		  }, 200);
+		});
+		}
+*/
+    });
+    $( "#sortable" ).disableSelection();
+
+  });
+
+  </script>
+
+ </body>
+</html>
