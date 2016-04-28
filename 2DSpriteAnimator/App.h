@@ -20,7 +20,9 @@ class App
 		int height;
 		
 		SDL_Window * window;
+		SDL_Window * window_tool;
 		SDL_Thread * sdl_thread;
+		SDL_Thread * sdl_thread_tool;
 		
 		App(int width, int height);
 

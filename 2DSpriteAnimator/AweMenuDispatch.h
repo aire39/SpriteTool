@@ -32,6 +32,10 @@ class AWEMenuDispatch : public Awesomium::JSMethodHandler
 
 			if (str == Awesomium::WSLit("Quit"))
 				appevent->exit();
+
+			if (str == Awesomium::WSLit("SelectionMode"))
+				appevent->setControlPath(arg.At(0).ToInteger() );
+
 		}
 
 		Awesomium::JSValue OnMethodCallWithReturnValue(Awesomium::WebView * caller, unsigned int remote_id, const Awesomium::WebString& str, const Awesomium::JSArray& arg)

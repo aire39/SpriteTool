@@ -2,6 +2,7 @@
 #include "App.h"
 #include "HTMLEngine.h"
 #include "AppEvent.h"
+
 #include <math.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
@@ -15,6 +16,13 @@ int Renderer::render_wrapper(void *data)
 {
 	Renderer * renderer = (Renderer*)data;
 	renderer->render(renderer->window);
+	return 0;
+}
+
+int Renderer::render_wrapper_tool(void *data)
+{
+	Renderer * renderer = (Renderer*)data;
+	renderer->render_tool(renderer->window_tool);
 	return 0;
 }
 
@@ -66,20 +74,13 @@ void Renderer::renderGrid(int xoffset, int yoffset, int size)
 int Renderer::render(SDL_Window * window)
 {
 	GLuint texID = 0;
-	GLuint ld_img = 0;
 	GLuint pWidth = width;
 	GLuint pHeight = height;
 	int ww = width;
 	int hh = height;
 
 	SDL_Window * w = static_cast<SDL_Window*>(window);
-
-	SDL_GLContext gContext = SDL_GL_CreateContext(w);
-	if (gContext == NULL)
-	{
-		std::cout << "Unable to create OpenGL (3.3) context..." << std::endl;
-		return 0;
-	}
+	SDL_GL_MakeCurrent(window, gContext_main);
 
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
@@ -111,10 +112,14 @@ int Renderer::render(SDL_Window * window)
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	Awesomium::BitmapSurface * wv_surface = static_cast<Awesomium::BitmapSurface*>(htmlengine->activeWebView(0)->surface());
 	wv_surface->set_is_dirty(true);
+	SDL_GL_MakeCurrent(window, NULL);
 
 	while (quit == false)
 	{
-		//std::cout << wv_main->window()
+		SDL_GL_MakeCurrent(window, NULL);
+		while (switcher == true && quit == false);
+		SDL_GL_MakeCurrent(window, gContext_main);
+		glViewport(0, 0, ww, hh);
 
 		if ((((int)pWidth != (int)ww) || ((int)pHeight != (int)hh)) && (wv_surface != NULL))
 		{
@@ -164,6 +169,7 @@ int Renderer::render(SDL_Window * window)
 		glTranslatef(appevent->getMouseX(), appevent->getMouseY(), 0.0f);
 
 		renderGrid(appevent->getMouseX(), appevent->getMouseY(), 50);
+		
 		glPushMatrix();
 
 		glBindTexture(GL_TEXTURE_2D, ld_img);
@@ -188,7 +194,38 @@ int Renderer::render(SDL_Window * window)
 		glEnd();
 		glPopMatrix();
 
+		glDisable(GL_TEXTURE_2D);
+
+		glPushMatrix();
+			glTranslatef(wi / 2.0f - (wi / 4.0f), he / 2.0f - (he / 4.0f) + 40.0f, 0.0f);
+		float pwi = (float)wi / 9.0f;
+		float phe = (float)he / 11.0f;
+
+		for (int i = 0; i < 11; i++)
+		{
+			float ii = (float)he / 11.0f * (float)i;
+			for (int j = 0; j < 9; j++)
+			{
+				float jj = (float)wi / 9.0f * (float)j;
+
+				//std::cout << (j + (i * 8)) << ": " << ((float)j) / 8.0f << std::endl;
+
+				glColor4f(((float)j) / 9.0f, ((float)i) / 11.0f, 0.0f, 0.5f);
+				glBegin(GL_TRIANGLE_STRIP);
+
+				glVertex2f(jj, ii + phe);
+				glVertex2f(jj, ii);
+				glVertex2f(jj + pwi, ii + phe);
+				glVertex2f(jj + pwi, ii);
+
+				glEnd();
+			}
+		}
+		glPopMatrix();
+
+
 		//Render menu
+		glEnable(GL_TEXTURE_2D);
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		glMatrixMode(GL_MODELVIEW);
@@ -210,10 +247,86 @@ int Renderer::render(SDL_Window * window)
 
 		SDL_Delay(17);
 		SDL_GL_SwapWindow(w);
+		switcher ^= true;
 
 	}
 
 	glDeleteTextures(1, &texID);
+
+	return 0;
+}
+
+int Renderer::render_tool(SDL_Window * window)
+{
+	SDL_GL_MakeCurrent(window, gContext_tool);
+
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0, 600, 800, 0, 0, 1);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	SDL_GL_MakeCurrent(window, NULL);
+	while (quit == false)
+	{
+		SDL_GL_MakeCurrent(window, NULL);
+		while (switcher == false && quit == false);
+		SDL_GL_MakeCurrent(window, gContext_tool);
+
+		glClear(GL_COLOR_BUFFER_BIT);
+		glLoadIdentity();
+
+		glPushMatrix();
+		
+			glTranslatef(0.0f, 0.0f, 0.0f);
+
+			glBindTexture(GL_TEXTURE_2D, ld_img);
+			glColor3f(1.0f, 1.0f, 1.0f);
+			
+			glBegin(GL_TRIANGLE_STRIP);
+				glTexCoord2f(0.0f, 1.0f);
+				glVertex2f(0, fip_image->getHeight());
+				glTexCoord2f(0.0f, 0.0f);
+				glVertex2f(0, 0);
+				glTexCoord2f(1.0f, 1.0f);
+				glVertex2f(fip_image->getWidth(), fip_image->getHeight());
+				glTexCoord2f(1.0f, 0.0f);
+				glVertex2f(fip_image->getWidth(), 0);
+			glEnd();
+
+		glPopMatrix();
+
+		////////////////
+
+		glPushMatrix();
+
+		glTranslatef(0.0f, 0.0f, 0.0f);
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glColor4f(.0f, 1.0f, 1.0f, 0.5f);
+
+		glBegin(GL_TRIANGLE_STRIP);
+		glVertex2f(0, fip_image->getHeight()/32.0f);
+		glTexCoord2f(0.0f, 0.0f);
+		glVertex2f(0, 0);
+		glTexCoord2f(1.0f, 1.0f);
+		glVertex2f(fip_image->getWidth() / 32.0f, fip_image->getHeight() / 32.0f);
+		glTexCoord2f(1.0f, 0.0f);
+		glVertex2f(fip_image->getWidth() / 32.0f, 0);
+		glEnd();
+
+		glPopMatrix();
+
+		SDL_Delay(10);
+		SDL_GL_SwapWindow(window);
+
+		switcher ^= true;
+	}
 
 	return 0;
 }

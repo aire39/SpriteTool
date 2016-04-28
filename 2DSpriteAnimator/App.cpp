@@ -25,10 +25,12 @@ App::~App()
 {
 	renderer->exit();
 	appevent->exit();
+	SDL_WaitThread(sdl_thread_tool, NULL);
 	SDL_WaitThread(sdl_thread, NULL);
 	delete appevent;
 	delete renderer;
 	delete htmlengine;
+	SDL_DestroyWindow(window_tool);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
 }
@@ -45,7 +47,7 @@ void App::init() {
 	//
 
 	fip_image = new fipImage();
-	if (fip_image->load("Images\\sprite.png") == false)
+	if (fip_image->load("G:\\Projects\\2DSpriteAnimator\\Debug\\mmx1xsprites.png") == false)
 	{
 		std::cout << "Unable to load image! (FI)." << std::endl;
 		return;
@@ -72,12 +74,31 @@ void App::init() {
 	// Create SDL window and surface for drawing and set the screen/surface to white
 	//
 
+	SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, GL_TRUE);
+
+	//Initialize SDL
+	if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+	{ 
+		printf( "SDL could not initialize! SDL_Error: %s\n", SDL_GetError() );
+	}
+
+	window_tool = SDL_CreateWindow("App Tool", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+	if (window_tool == NULL)
+	{
+		std::cout << "Window cannot be created. Error: " << SDL_GetError() << std::endl;
+		return;
+	}
+
+	SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, GL_TRUE);
+
 	window = SDL_CreateWindow("App", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 	if (window == NULL)
 	{
 		std::cout << "Window cannot be created. Error: " << SDL_GetError() << std::endl;
 		return;
 	}
+
+	SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, GL_TRUE);
 
 	// Set default graphics surface and color
 	//
@@ -120,9 +141,29 @@ HTMLEngine * App::getHTMLEngine()
 
 void App::run()
 {
-	this->renderer = new Renderer(window, htmlengine, appevent, width, height);
+	this->renderer = new Renderer(window, window_tool, htmlengine, appevent, width, height);
 	this->renderer->setImage(fip_image);
+
+	SDL_GLContext gContext1 = SDL_GL_CreateContext(window_tool);
+	if (gContext1 == NULL)
+	{
+		std::cout << "Unable to create OpenGL (3.3) context..." << std::endl;
+	}
+
+	SDL_GLContext gContext0 = SDL_GL_CreateContext(window);
+	if (gContext0 == NULL)
+	{
+		std::cout << "Unable to create OpenGL (3.3) context..." << std::endl;
+	}
+
+	this->renderer->setContexts(gContext0, gContext1);
+
+	SDL_GL_MakeCurrent(window_tool, NULL);
+	SDL_GL_MakeCurrent(window, NULL);
+
 	sdl_thread = SDL_CreateThread(Renderer::render_wrapper, "renderThread", renderer);
+	Sleep(20);
+	sdl_thread_tool = SDL_CreateThread(Renderer::render_wrapper_tool, "renderThread_Tool", renderer);
 
 	appevent->control();
 }

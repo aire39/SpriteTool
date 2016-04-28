@@ -12,11 +12,13 @@
 
 AppEvent::AppEvent(SDL_Window * window, HTMLEngine * htmlengine, Awesomium::WebView * wv_main)
 {
+	this->control_path = 0;
 	this->window = window;
 	this->htmlengine = htmlengine;
 	this->wv_main = wv_main;
 	this->ww = 800;
 	this->hh = 600;
+	this->selection_box = false;
 	cx = 0.0f;
 	cy = 0.0f;
 	lmcx = 0;
@@ -31,6 +33,93 @@ void AppEvent::setImage(fipImage * fip_image)
 	this->fip_image = fip_image;
 }
 
+void AppEvent::default_set(const SDL_Event &e)
+{
+	if (e.type == SDL_QUIT)
+	{
+		quit = true;
+		//m_app->exit();
+	}
+
+	if (e.type == SDL_DROPFILE)
+	{
+		std::cout << "Drop File: " << e.drop.file << std::endl;
+		cImgPath = e.drop.file;
+		img_uploaded = true;
+		done_loading = false;
+		SDL_free(e.drop.file);
+	}
+}
+
+void AppEvent::set1(const SDL_Event &e)
+{
+
+
+	if (e.type == SDL_MOUSEMOTION)
+	{
+		if (m_wrp == true && e.button.button == SDL_BUTTON_MIDDLE)
+		{
+			SDL_WarpMouseInWindow(window, ww / 2, hh / 2);
+			cx += e.motion.x - (ww / 2);
+			cy += e.motion.y - (hh / 2);
+
+			Awesomium::JSValue jso_window = wv_main->ExecuteJavascriptWithResult(Awesomium::WSLit("window"), Awesomium::WSLit(""));
+			Awesomium::JSArray jso_props;
+			jso_props.Push(Awesomium::JSValue((int)cx));
+			jso_props.Push(Awesomium::JSValue((int)cy));
+			jso_window.ToObject().InvokeAsync(Awesomium::WSLit("updateCamMovement"), jso_props);
+		}
+		else if (m_wrp2 == true)
+		{
+			SDL_WarpMouseInWindow(window, ww / 2, hh / 2);
+			scale_z += (e.motion.y - (hh / 2.0f)) / 1000.0f;
+			std::cout << scale_z << std::endl;
+		}
+		else
+		{
+			wv_main->InjectMouseMove(e.motion.x, e.motion.y);
+		}
+	}
+
+	if (e.type == SDL_MOUSEBUTTONDOWN)
+	{
+		if (e.button.button == SDL_BUTTON_LEFT)
+			wv_main->InjectMouseDown(Awesomium::MouseButton::kMouseButton_Left);
+		if (e.button.button == SDL_BUTTON_MIDDLE) {
+			lmcx = e.motion.x;
+			lmcy = e.motion.y;
+			SDL_WarpMouseInWindow(window, ww / 2, hh / 2);
+			SDL_ShowCursor(SDL_DISABLE);
+			m_wrp = true;
+		}
+		if (e.button.button == SDL_BUTTON_RIGHT) {
+			m_wrp2 = true;
+			lmcx = e.motion.x;
+			lmcy = e.motion.y;
+			SDL_WarpMouseInWindow(window, ww / 2, hh / 2);
+			SDL_ShowCursor(SDL_DISABLE);
+		}
+	}
+
+	if (e.type == SDL_MOUSEBUTTONUP)
+	{
+		if (e.button.button == SDL_BUTTON_LEFT)
+			wv_main->InjectMouseUp(Awesomium::MouseButton::kMouseButton_Left);
+
+		if (e.button.button == SDL_BUTTON_MIDDLE || e.button.button == SDL_BUTTON_RIGHT) {
+			SDL_ShowCursor(SDL_ENABLE);
+			SDL_WarpMouseInWindow(window, lmcx, lmcy);
+			m_wrp = false;
+			m_wrp2 = false;
+		}
+	}
+}
+
+void AppEvent::set2(const SDL_Event &e)
+{
+
+}
+
 void AppEvent::control()
 {
 	// Window controls such as Keyboard, Mouse, etc is hadnled here.
@@ -42,101 +131,36 @@ void AppEvent::control()
 
 		while (SDL_PollEvent(&e))
 		{
-			if (e.type == SDL_QUIT)
-			{
-				quit = true;
-				//m_app->exit();
-			}
+			default_set(e);
 
-			if (e.type == SDL_DROPFILE)
-			{
-				std::cout << "Drop File: " << e.drop.file << std::endl;
-				cImgPath = e.drop.file;
-				img_uploaded = true;
-				done_loading = false;
-				SDL_free(e.drop.file);
-			}
+			if (control_path == 0)
+				set1(e);
 
-			if (e.type == SDL_MOUSEMOTION)
+			if (control_path == 1)
+				set2(e);
+
+
+			if (img_uploaded == true)
 			{
-				if (m_wrp == true && e.button.button == SDL_BUTTON_MIDDLE)
+				SDL_mutexP(mutex);
+				fip_image->clear();
+				if (fip_image->load(cImgPath.c_str()) == false)
 				{
-					SDL_WarpMouseInWindow(window, ww / 2, hh / 2);
-					cx += e.motion.x - (ww / 2);
-					cy += e.motion.y - (hh / 2);
+					std::cout << "Failed to load image! : " << cImgPath.c_str() << std::endl;
+				}
+				fip_image->flipVertical();
 
-					Awesomium::JSValue jso_window = wv_main->ExecuteJavascriptWithResult(Awesomium::WSLit("window"), Awesomium::WSLit(""));
-					Awesomium::JSArray jso_props;
-					jso_props.Push(Awesomium::JSValue((int)cx));
-					jso_props.Push(Awesomium::JSValue((int)cy));
-					jso_window.ToObject().InvokeAsync(Awesomium::WSLit("updateCamMovement"), jso_props);
-				}
-				else if (m_wrp2 == true)
-				{
-					SDL_WarpMouseInWindow(window, ww / 2, hh / 2);
-					scale_z += (e.motion.y - (hh / 2.0f)) / 1000.0f;
-					std::cout << scale_z << std::endl;
-				}
-				else
-				{
-					wv_main->InjectMouseMove(e.motion.x, e.motion.y);
-				}
+				transp = fip_image->isTransparent();
+				wi = (float)fip_image->getWidth();
+				he = (float)fip_image->getHeight();
+				SDL_mutexV(mutex);
+				done_loading = true;
 			}
 
-			if (e.type == SDL_MOUSEBUTTONDOWN)
-			{
-				if (e.button.button == SDL_BUTTON_LEFT)
-					wv_main->InjectMouseDown(Awesomium::MouseButton::kMouseButton_Left);
-				if (e.button.button == SDL_BUTTON_MIDDLE) {
-					lmcx = e.motion.x;
-					lmcy = e.motion.y;
-					SDL_WarpMouseInWindow(window, ww / 2, hh / 2);
-					SDL_ShowCursor(SDL_DISABLE);
-					m_wrp = true;
-				}
-				if (e.button.button == SDL_BUTTON_RIGHT) {
-					m_wrp2 = true;
-					lmcx = e.motion.x;
-					lmcy = e.motion.y;
-					SDL_WarpMouseInWindow(window, ww / 2, hh / 2);
-					SDL_ShowCursor(SDL_DISABLE);
-				}
-			}
-
-			if (e.type == SDL_MOUSEBUTTONUP)
-			{
-				if (e.button.button == SDL_BUTTON_LEFT)
-					wv_main->InjectMouseUp(Awesomium::MouseButton::kMouseButton_Left);
-
-				if (e.button.button == SDL_BUTTON_MIDDLE || e.button.button == SDL_BUTTON_RIGHT) {
-					SDL_ShowCursor(SDL_ENABLE);
-					SDL_WarpMouseInWindow(window, lmcx, lmcy);
-					m_wrp = false;
-					m_wrp2 = false;
-				}
-			}
-		}
-
-		if (img_uploaded == true)
-		{
-			SDL_mutexP(mutex);
-			fip_image->clear();
-			if (fip_image->load(cImgPath.c_str()) == false)
-			{
-				std::cout << "Failed to load image! : " << cImgPath.c_str() << std::endl;
-			}
-			fip_image->flipVertical();
-
-			transp = fip_image->isTransparent();
-			wi = (float)fip_image->getWidth();
-			he = (float)fip_image->getHeight();
-			SDL_mutexV(mutex);
-			done_loading = true;
-		}
-
-		htmlengine->update();
-		while (wv_main->IsLoading())
 			htmlengine->update();
+			while (wv_main->IsLoading())
+				htmlengine->update();
+		}
 
 		SDL_Delay(16);
 	}
@@ -205,6 +229,11 @@ void AppEvent::onOpenFile(Awesomium::WebView * caller, const Awesomium::JSArray&
 
 	}
 
+}
+
+void AppEvent::setControlPath(int id)
+{
+	control_path = id;
 }
 
 int AppEvent::eventFilter(void * pthis, const SDL_Event * evt)
